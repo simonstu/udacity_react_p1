@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 
 class SearchBooks extends Component {
     static propTypes = {
+        books: PropTypes.array.isRequired,
         onChangeShelf: PropTypes.func.isRequired
     }
 
@@ -14,8 +15,8 @@ class SearchBooks extends Component {
         query: '',
     }
 
-    changeShelf = (newShelf, bookID) => {
-        this.props.onChangeShelf(newShelf, bookID)
+    changeShelf = (newShelf, book) => {
+        this.props.onChangeShelf(newShelf, book)
     }
 
     updateQuery = (query) => {
@@ -34,6 +35,8 @@ class SearchBooks extends Component {
     }
 
     render() {
+        const {books} = this.props
+
         return (
           <div className="search-books">
             <div className="search-books-bar">
@@ -48,7 +51,8 @@ class SearchBooks extends Component {
               </div>
             </div>
             <SearchBooksResults
-                books={this.state.booksFound}
+                books={books}
+                booksFound={this.state.booksFound}
                 onChangeShelf={this.changeShelf} />
           </div>
         )

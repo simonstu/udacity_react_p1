@@ -1,23 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import BooksGrid from './BooksGrid'
+import SearchBooksGrid from './SearchBooksGrid'
 
 class SearchBooksResults extends Component {
     static propTypes = {
         books: PropTypes.array.isRequired,
+        booksFound: PropTypes.array.isRequired,
         onChangeShelf: PropTypes.func.isRequired
     }
 
-    changeShelf = (newShelf, bookID) => {
-        this.props.onChangeShelf(newShelf, bookID)
+    changeShelf = (newShelf, book) => {
+        this.props.onChangeShelf(newShelf, book)
     }
 
     render() {
         return (
             <div className="search-books-results">
-              <BooksGrid
+              <SearchBooksGrid
                 books={this.props.books}
-                shelf="none"
+                booksFound={this.props.booksFound}
                 onChangeShelf={this.changeShelf} />
             </div>
         )

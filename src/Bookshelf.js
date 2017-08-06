@@ -12,8 +12,8 @@ class Bookshelf extends Component {
         onChangeShelf: PropTypes.func.isRequired
     }
 
-    changeShelf = (newShelf, bookID) => {
-        this.props.onChangeShelf(newShelf, bookID)
+    changeShelf = (newShelf, book) => {
+        this.props.onChangeShelf(newShelf, book)
     }
 
     render() {

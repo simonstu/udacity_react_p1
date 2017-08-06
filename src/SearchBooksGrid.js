@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import Book from './Book'
 
-class BooksGrid extends Component {
+class SearchBooksGrid extends Component {
     static propTypes = {
-        shelf: PropTypes.string.isRequired,
         books: PropTypes.array.isRequired,
+        booksFound: PropTypes.array.isRequired,
         onChangeShelf: PropTypes.func.isRequired
     }
 
@@ -14,11 +14,20 @@ class BooksGrid extends Component {
     }
 
     render() {
-        const {shelf, books} = this.props
+        const {books, booksFound} = this.props;
+
+        const booksToRender = booksFound.map(function(bookFound) {
+            let bookAlreadyOnShelf = books.filter((book) => book.id === bookFound.id)
+            if (bookAlreadyOnShelf.length > 0) {
+                return bookAlreadyOnShelf[0]
+            } else {
+                return bookFound
+            }
+        });
 
         return (
             <ol className="books-grid">
-                {books.filter((book) => book.shelf === shelf).map((book) => (
+                {booksToRender.map((book) => (
                   <li key={book.id}>
                     <Book
                         book={book}
@@ -33,4 +42,4 @@ class BooksGrid extends Component {
     }
 }
 
-export default BooksGrid
+export default SearchBooksGrid

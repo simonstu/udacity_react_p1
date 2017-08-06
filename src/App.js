@@ -6,55 +6,36 @@ import SearchBooks from './SearchBooks'
 import './App.css'
 
 class BooksApp extends React.Component {
-  state = {
-    books: []
+    state = {
+        books: []
   }
 
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      this.setState({ books })
-    })
+      BooksAPI.getAll().then((books) => {
+          this.setState({ books })
+      })
   }
 
   assignNewShelf = (book, newShelf, bookID) => {
-    console.log(newShelf)
-    return book
-  }
-
-  addToShelf = (newShelf, bookID) => {
-    const bookToChange = this.state.books.filter( function (book) {return book.id === bookID})
-    if (bookToChange.length===1) {
-      this.changeShelf(newShelf, bookID)
-    } else {
-      let book = BooksAPI.get(bookID).then(book => { return book } )
-      const that = this
-      book.then(function(result) {
-          book = result;
-          BooksAPI.update(book, newShelf)
-          book.shelf = newShelf
-          that.addBookToShelf(book)
-      })
-    }
+      console.log(newShelf)
+      return book
   }
 
   addBookToShelf(book) {
-    this.setState(state => ({
-        books: state.books.concat([ book ])
-    }))
+      this.setState(state => ({
+          books: state.books.concat([ book ])
+      }))
   }
 
-  changeShelf = (newShelf, bookID) => {
-      this.setState(state => ({
-        books: state.books.map(
-          (book) => {
-            if (book.id === bookID) {
-              book.shelf=newShelf;
-            }
-            return book })
-      }))
-      const book = BooksAPI.get(bookID).then(book => { return book } )
-      book.then(function(result) {
-         BooksAPI.update(result, newShelf)
+  changeShelf = (newShelf, book) => {
+      BooksAPI.update(book, newShelf).then(() => {
+          book.shelf = newShelf
+
+          // Filter out the book and append it to the end of the list
+          // so it appears at the end of whatever shelf it was added to.
+          this.setState(state => ({
+            books: state.books.filter(b => b.id !== book.id).concat([ book ])
+          }))
       })
   }
 
@@ -64,8 +45,9 @@ class BooksApp extends React.Component {
         <Route path='/search' render={() => (
           <SearchBooks
             books={this.state.books}
-            onChangeShelf={this.addToShelf} />
+            onChangeShelf={this.changeShelf} />
         )}/>
+
         <Route exact path='/' render={() => (
           <div className="list-books">
             <div className="list-books-title">
@@ -99,7 +81,7 @@ class BooksApp extends React.Component {
           </div>
       )}/>
     </div>
-    )}
+  )}
 }
 
 export default BooksApp
